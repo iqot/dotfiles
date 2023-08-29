@@ -10,7 +10,7 @@
 [merge]
 	tool = vimdiff
 [mergetool]
-rkeepBackup = false
+	keepBackup = false
 [rebase]
 	autosquash = true
 [pull]
