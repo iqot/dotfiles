@@ -19,6 +19,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'SirVer/ultisnips', has('python3') ? {} : {'on': []}
 Plug 'honza/vim-snippets'
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'github/copilot.vim'
+Plug 'junegunn/fzf', {'do': {-> fzf#install()}}
+
 " utilities
 Plug 'direnv/direnv.vim'
 Plug 'tpope/vim-fugitive'

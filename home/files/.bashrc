@@ -42,6 +42,7 @@ GPG_TTY="$(tty)"
 printf -v PATH "%s:" \
   ~/.local/bin \
   "$PATH" \
+  ~/.vim/plugged/fzf/bin \
   "$GOPATH/bin" \
   ~/.config/emacs/bin
 PATH="${PATH%%:}"

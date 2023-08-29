@@ -1,11 +1,11 @@
 # default settings used throughout this flake
 
 [user]
-name = "midchildan"
-fullName = "midchildan"
-homeDirectory = "/home/midchildan"
-email = "git@midchildan.org"
-gpgKey = "FEF0AE2D544934825F0640AA186A1EDAC5C63F83"
+name = "tobimatsush"
+fullName = "tobimatsush"
+homeDirectory = "/home/tobimatsush"
+email = "tobimatsush@gmail.com"
+gpgKey = "237CD7B640FBC6F2950F89B18ABC1E9EB3BF5295"
 
 # NOTE: Make sure to understand what the following does. It's a good idea to
 # override this option this per host.
@@ -14,7 +14,7 @@ gpgKey = "FEF0AE2D544934825F0640AA186A1EDAC5C63F83"
 stateVersion = "21.11"
 
 [user.darwin]
-homeDirectory = "/Users/midchildan"
+homeDirectory = "/Users/tobimatsush"
 
 [os]
 system = "x86_64-linux"
