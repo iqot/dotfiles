@@ -317,5 +317,10 @@ autoload -Uz promptinit && promptinit
 prompt dashboard
 
 # must be run last
-source ~/.nix-profile/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ZSH_HIGHLIGHT_PATH="/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+if [[ -f "$ZSH_HIGHLIGHT_PATH" ]]; then
+  source $ZSH_HIGHLIGHT_PATH
+fi
+
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)

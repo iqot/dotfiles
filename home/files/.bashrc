@@ -49,6 +49,7 @@ printf -v PATH "%s:" \
   ~/.local/bin \
   "$PATH" \
   /usr/local/sbin \
+  ~/.vim/plugged/fzf/bin \
   "$GOPATH/bin" \
   ~/.config/emacs/bin
 PATH="${PATH%%:}"
