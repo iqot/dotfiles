@@ -49,7 +49,6 @@ Plug 'midchildan/ft-confluence.vim'
 Plug 'ledger/vim-ledger', {'for': 'ledger'}
 Plug 'LnL7/vim-nix', {'for': 'nix'}
 Plug 'rust-lang/rust.vim', {'for': 'rust'}
-Plug 'leafgarland/typescript-vim', {'for': 'ts'}
 Plug 'psf/black', { 'branch': 'stable', 'for': 'python'}
 Plug 'lervag/vimtex'
 Plug 'cespare/vim-toml'
