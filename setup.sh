@@ -2,40 +2,47 @@
 # shellcheck disable=SC2215
 
 DOTFILE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILE_FILES_DIR=home/files
+DOTFILE_FILES_DIR=files
 
-# shellcheck source=scripts/setup
-source "$DOTFILE_DIR/scripts/setup"
+# shellcheck source=scripts/lib/setup
+source "$DOTFILE_DIR/scripts/lib/setup"
 
 # Remove dead symlinks
-@clean
+clean:
   - gc: true
 
-@shell Update Submodules
+run: submodule updates
   - git submodule --quiet update --init
 
-@install Install Shell Config
+install: Nix config
+  - .config/nix/nix.conf
+  - .config/nixpkgs/config.nix
+  - .config/nixpkgs/overlays/dotfiles.nix
+
+install: shell config
   - .bash_profile
   - .bashrc
+  - .zprofile
   - .zshenv
   - .zshrc
   - .hushlogin
   - .inputrc
-  - .config/shell/snippets/common
-  - .config/shell/snippets/osx
-  - .config/shell/snippets/main/common.md
-  - .config/shell/snippets/main/osx.md
+  - .local/share/zsh/fzf-sources
   - .local/share/zsh/site-functions
+  - .local/share/zsh/snippets/common
+  - .local/share/zsh/snippets/osx
+  - .local/share/zsh/snippets/dotfiles/common.md
+  - .local/share/zsh/snippets/dotfiles/macos.md
   - .local/opt/tldr
 
-@install Install Vim Config
+install: Vim config
   - .vim
   - .config/nvim
   - download: \
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
       ~/.vim/autoload/plug.vim
 
-@install Install Git Config
+install: Git config
   - .config/git/attributes
   - .config/git/config
   - .config/git/ignore
@@ -43,15 +50,7 @@ source "$DOTFILE_DIR/scripts/setup"
   - .local/bin/git-deploy
   - .local/bin/git-kitty
 
-@install Install GPG Config
-  - shell: install -d -m 700 ~/.gnupg
-  - chmod: 700 .gnupg
-  - chmod: 600 .gnupg/gpg.conf
-  - chmod: 600 .gnupg/gpg-agent.conf
-  - .gnupg/gpg-agent.conf
-  - Library/LaunchAgents/org.gnupg.gpg-agent.plist
-
-@install Install SSH Config
+install: SSH config
   - shell: install -d -m 700 ~/.ssh ~/.ssh/sockets
   - chmod: 700 .ssh
   - .ssh/config
@@ -60,57 +59,58 @@ source "$DOTFILE_DIR/scripts/setup"
   - .ssh/config.d/90-general.conf
   - .ssh/config.d/90-multiplexing.conf
   - .local/bin/rcd
-  - .local/libexec/ssh-askpass
+  - .local/libexec/ssh/askpass
   - Library/LaunchAgents/com.openssh.ssh-askpass.plist
 
-@install Install LaTeX Config
+install: container config
+  - .config/containers/containers.conf
+
+install: LaTeX config
   - .config/latexmk/latexmkrc
   - .local/bin/platexmk
   - .local/bin/uplatexmk
 
-@install Install Emacs Config
-  - github: hlissner/doom-emacs ~/.config/emacs
+install: Emacs config
+  - github: doomemacs/doomemacs ~/.config/emacs
   - .config/doom/init.el
   - .config/doom/config.org
   - .config/doom/packages.el
 
-@install Install VSCode Config
+install: VSCode config
   - shell: install -d -m 700 ~/Library/Application\ Support/Code
   - Library/Application\ Support/Code/User/settings.json
 
-@install Install Miscellaneous Config
+install: miscellaneous config
   - .clang-format
   - .editrc
-  - .gemrc
-  - .ideavimrc
+  - .prettierrc
+  - .screenrc
+  - .wgetrc
   - .config/bat/config
+  - .config/broot/conf.hjson
   - .config/broot/launcher/refused
-  - .config/containers/containers.conf
+  - .config/gem/gemrc
+  - .config/ideavim/ideavimrc
+  - .config/ipython/profile_default/ipython_config.py
   - .config/kitty/kitty.conf
-  - .config/alacritty/alacritty.yml
-  - .config/nixpkgs/config.nix
+  - .config/nano/nanorc
   - .config/ranger/rc.conf
   - .config/ranger/scope.sh
   - .config/tmux/tmux.conf
   - .config/zathura/zathurarc
-  - .ipython/profile_default/ipython_config.py
   - .local/bin/imgcat
   - .local/bin/uninstaller
-  - .nanorc
-  - .prettierrc
-  - .screenrc
-  - .wgetrc
   - Library/Application\ Support/AquaSKK/keymap.conf
   - Library/Application\ Support/iTerm2/DynamicProfiles/template.plist
   - Library/Developer/Xcode/UserData/IDETemplateMacros.plist
 
-# The below will not run unless --init is specified
+# The following will not run unless --init is specified
 
-@shell Install Packages
+run: package installation
   - init: true
   - nvim --headless +PlugInstall +'%print' +qall
   - ~/.config/emacs/bin/doom -y install --no-config
 
-@githooks
+githooks:
   - init: true
   - post-receive

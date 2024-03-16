@@ -1,0 +1,425 @@
+#!/usr/bin/env zsh
+
+emulate -L zsh
+
+# Alternative FZF completion and keybinding widgets that extends the stock
+# widgets provided by FZF. To use this widget, specify the directory containing
+# the stock FZF widgets by placing the following command in ~/.zshrc:
+#
+#     zstyle ":dotfiles:fzf" script-dir /path/to/fzf/shell/dir
+#
+# Make sure not to source the stock FZF widgets when using this widget because
+# doing so would would cause conflicts.
+
+zmodload -i zsh/parameter
+
+if [[ "$TERM" == 'dumb' ]]; then
+  () {
+    if zle; then
+      zle -M "$*"
+    else
+      echo "$*"
+    fi
+  } "[ERROR] fzf-widgets: unsupported terminal '$TERM'"
+  return
+fi
+
+# find and load upstream fzf widgets
+
+local searchpath
+if ! zstyle -s ':dotfiles:fzf' script-dir searchpath; then
+  searchpath=(
+    ~/.nix-profile/share/fzf
+    /run/current-system/sw/share/fzf
+    ~/.fzf.zsh
+    "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
+    ~/.vim/plugged/fzf/shell
+    /usr/local/opt/fzf/shell
+    /usr/share/doc/fzf/examples
+  )
+fi
+
+local f is_found=0
+for f in "$searchpath[@]"; do
+  if [[ -f "$f/completion.zsh" && -f "$f/key-bindings.zsh" ]]; then
+    FZF_CTRL_R_OPTS="${FZF_CTRL_R_OPTS:---reverse}"
+
+    {
+      function bindkey() {} # don't let fzf change the shell keybindings
+      source "$f/completion.zsh"
+      source "$f/key-bindings.zsh"
+    } always {
+      unfunction bindkey
+    }
+
+    is_found=1
+    break
+  elif [[ "$f" == *.zsh && -f "$f" ]]; then
+    FZF_CTRL_R_OPTS="${FZF_CTRL_R_OPTS:---reverse}"
+
+    {
+      function bindkey() {} # don't let fzf change the shell keybindings
+      source "$f"
+    } always {
+      unfunction bindkey
+    }
+
+    is_found=1
+    break
+  fi
+done
+
+if (( ! is_found )); then
+  local loglevel='WARN'
+  case "$WIDGET" in
+    fzf-completion)
+      zle "${fzf_default_completion:-expand-or-complete}"
+      ;;
+    fzf-history-widget)
+      zle history-incremental-search-backward
+      ;;
+    fzf-file-widget)
+      if ! zle -al complete-file; then
+        zle -C complete-file complete-word _generic &&
+          zstyle ':completion:complete-file:*' completer _files
+      fi
+      zle complete-file
+      ;;
+    *)
+      loglevel='ERROR'
+      ;;
+  esac
+
+  zle -M "[$loglevel] fzf-widgets: The directory containing the stock FZF widgets were not detected. Specify one with 'zstyle \":dotfiles:fzf\" script-dir /path/to/fzf/shell/dir'"
+  return 1
+fi
+
+# define additional functions and widgets
+
+__dot::ensure_cwd_is_git_repo() {
+  if ! git rev-parse --is-inside-git-dir &> /dev/null; then
+    zle reset-prompt
+    zle -M '[ERROR] fzf-widgets: Not in a Git repo'
+    return 1
+  fi
+}
+
+__dot::fzf() {
+  local -a args
+  if ! zstyle -a ':dotfiles:fzf' default-args args; then
+    args=(
+      "--height" "${FZF_TMUX_HEIGHT:-40%}"
+      "--reverse"
+      "--bind" "ctrl-/:toggle-preview"
+      "$FZF_DEFAULT_OPTS"
+    )
+  fi
+  FZF_DEFAULT_OPTS="${(j: :)args}" $(__fzfcmd) "$@"
+}
+
+fzf-dictionary-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  local dict="${WORDLIST:-/usr/share/dict/words}"
+  if [[ ! -f "$dict" ]]; then
+    zle reset-prompt
+    zle -M "[ERROR] fzf-widgets: dictionary file '$dict' not available"
+    return 1
+  fi
+
+  local selected
+  __dot::fzf -m < "$dict" | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-doh-widget() {
+  local doh_list
+  if ! zstyle -s ':dotfiles:fzf' doh-list doh_list; then
+    doh_list=~/.local/share/zsh/fzf-sources/doh.csv
+  fi
+
+  local selected
+  __dot::fzf +m < "$doh_list" | IFS= read -r selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${selected#*,}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-branch-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+  local fmt='format:%C(auto)%cd %h%d %s'
+  local opts="--oneline --graph --date=short --color=always --pretty=${(q)fmt}"
+  local preview="git log $opts \$(sed s/^..// <<< {} | cut -d' ' -f1)"
+
+  git branch -a --color=always \
+    | grep -v '/HEAD\s' \
+    | sort \
+    | __dot::fzf -m --ansi --tac \
+        --preview-window right:'70%' --preview "$preview" \
+    | sed 's/^..//' \
+    | cut -d' ' -f1 \
+    | sed 's#^remotes/##' \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-log-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+  local preview='grep -o "[a-f0-9]\{7,\}" <<<{} | xargs git show --color=always'
+
+  git log \
+    --date=short \
+    --format='%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)' \
+    --graph \
+    --color=always \
+    | __dot::fzf -m --ansi --no-sort \
+        --bind 'ctrl-s:toggle-sort' \
+        --header 'Press CTRL-S to toggle sort' \
+        --preview "$preview" \
+    | grep -o "[a-f0-9]\{7,\}" \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-files-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+  local preview='cat {-1}'
+
+  if (( $+commands[bat] )); then
+    preview='bat --style=numbers --color=always --line-range :500 {}'
+  fi
+
+  git ls-files \
+    | __dot::fzf -m --preview "$preview" \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-remote-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+  local fmt='format:%C(auto)%cd %h%d %s'
+  local preview="git log --oneline --graph --date=short --pretty=${(q)fmt} {1}"
+
+  git remote -v \
+    | awk '{print $1 "\t" $2}' \
+    | uniq \
+    | __dot::fzf -m --tac --preview "$preview" \
+    | cut -d$'\t' -f1 \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-stash-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+
+  git stash list \
+    | __dot::fzf -m --reverse -d: --preview 'git show --color=always {1}' \
+    | cut -d: -f1 \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-status-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+
+  git -c color.status=always status --short \
+    | __dot::fzf -m --ansi --nth 2..,.. \
+        --preview 'git diff --color=always -- {-1} | sed 1,4d; cat {-1}' \
+    | cut -c4- \
+    | sed 's/.* -> //' \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-git-tag-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  __dot::ensure_cwd_is_git_repo || return
+
+  local selected
+
+  git tag --sort='-version:refname' \
+    | __dot::fzf -m --preview 'git show --color=always {}' \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-recent-dirs-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  local -a reply
+  autoload -Uz chpwd_recent_filehandler && chpwd_recent_filehandler $reply
+
+  local line selected
+  for line in $reply; do echo "$line"; done \
+    | __dot::fzf -m \
+    | IFS= read -r -d '' selected
+
+  if [[ -n "$selected" ]]; then
+    LBUFFER+="${(j: :)${(@q)${(f)selected}}}"
+  fi
+  zle reset-prompt
+}
+
+fzf-hostname-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  _fzf_complete_ssh "$LBUFFER"
+
+  zle reset-prompt
+}
+
+fzf-pid-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  _fzf_complete_kill "$LBUFFER"
+
+  zle reset-prompt
+}
+
+fzf-environment-variable-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  _fzf_complete_export "$LBUFFER"
+
+  zle reset-prompt
+}
+
+fzf-variable-widget() {
+  emulate -L zsh
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  _fzf_complete_unset "$LBUFFER"
+
+  zle reset-prompt
+}
+
+fzf-menu-widget() {
+local selected
+__dot::fzf +m <<EOF | awk '{ print $NF }' | IFS= read -r selected
+Dictionary words      : fzf-dictionary-widget
+DNS-over-HTTPS URLs   : fzf-doh-widget
+Environment variables : fzf-environment-variable-widget
+Files                 : fzf-file-widget
+Git branches          : fzf-git-branch-widget
+Git commits           : fzf-git-log-widget
+Git files             : fzf-git-files-widget
+Git remotes           : fzf-git-remote-widget
+Git stash             : fzf-git-stash-widget
+Files in Git status   : fzf-git-status-widget
+Git tags              : fzf-git-tag-widget
+Recent directories    : fzf-recent-dirs-widget
+Shell history         : fzf-history-widget
+Hostnames             : fzf-hostname-widget
+Process IDs           : fzf-pid-widget
+Shell variables       : fzf-variable-widget
+EOF
+
+  if [[ -n "$selected" ]]; then
+    zle "$selected"
+  else
+    zle reset-prompt
+  fi
+}
+
+zle -N fzf-dictionary-widget
+zle -N fzf-doh-widget
+zle -N fzf-environment-variable-widget
+zle -N fzf-git-branch-widget
+zle -N fzf-git-log-widget
+zle -N fzf-git-files-widget
+zle -N fzf-recent-dirs-widget
+zle -N fzf-git-remote-widget
+zle -N fzf-git-stash-widget
+zle -N fzf-git-status-widget
+zle -N fzf-git-tag-widget
+zle -N fzf-hostname-widget
+zle -N fzf-pid-widget
+zle -N fzf-variable-widget
+zle -N fzf-menu-widget
+
+fzf-widgets() {
+  if [[ "$1" == 'init' ]]; then
+    # The caller attempted to initialize fzf-widgets.
+    return
+  fi
+
+  zle -M "[ERROR] fzf-widgets: unknown widget '$WIDGET'"
+}
+
+if [[ "$1" == 'init' ]]; then
+  # The caller attempted to initialize fzf-widgets.
+  return
+elif zle; then
+  zle "${WIDGET:-fzf-widgets}"
+fi

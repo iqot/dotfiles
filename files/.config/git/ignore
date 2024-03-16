@@ -1,0 +1,84 @@
+###################
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+############
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+######################
+# Logs and databases #
+######################
+*.log
+*.sqlite
+
+######################
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+####################
+#  Editor configs  #
+####################
+# emacs
+.\#*
+# vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+###############
+#  Dev tools  #
+###############
+# clang
+.cache/clangd/
+compile_commands.json
+# direnv
+.direnv/
+
+##########
+#  Tags  #
+##########
+TAGS
+.TAGS
+!TAGS/
+tags
+.tags
+!tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
+
+#############
+#  ripgrep  #
+#############
+# files to be ignored by ripgrep, in addition to git
+.git/

@@ -1,35 +1,51 @@
 name: Build
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 jobs:
   flake:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@v3
       - name: Check flake
         run: nix flake check
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@v3
+      - name: Check format
+        run: |
+          nix fmt
+          git diff --exit-code
   home-manager:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@v3
       - name: Build Home Manager configuration
-        run: nix run '.#home' -- build --flake '.#ci'
+        run: |
+          nix-env -q # TODO: Remove. https://github.com/nix-community/home-manager/pull/3872
+          nix run '.#home' -- build --flake '.#ci' --print-build-logs
   nixos:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@v3
       - name: Build NixOS configuration
-        run: nix run '.#nixos' -- build -L --flake '.#ci'
-  nix-darwin:
+        run: nix run '.#os' -- build -L --flake '.#ci' --print-build-logs
+  nix-darwin-amd64:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - uses: DeterminateSystems/magic-nix-cache-action@v3
       - name: Build nix-darwin configuration
-        run: nix run '.#darwin' -- build -L --flake '.#ci'
+        run: nix run '.#os' -- build -L --flake '.#ci-amd64' --print-build-logs

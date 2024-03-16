@@ -1,0 +1,32 @@
+# completion
+set colored-stats on
+set colored-completion-prefix on
+set completion-ignore-case on
+set completion-map-case on
+set menu-complete-display-prefix on
+set show-all-if-ambiguous on
+set skip-completed-text on
+set visible-stats on
+
+# editing
+set editing-mode vi
+set history-size 2000
+set bind-tty-special-chars off
+set show-mode-in-prompt on
+set vi-cmd-mode-string "\1\e[2 q\2"
+set vi-ins-mode-string "\1\e[6 q\2"
+set emacs-mode-string "\1\e[6 q\2"
+
+set keymap vi-command
+"!": edit-and-execute-command
+"\C-l": clear-screen
+
+set keymap vi-insert
+TAB: menu-complete
+"\e[Z": menu-complete-backward
+"\C-o": operate-and-get-next
+"\C-p": history-search-backward
+"\C-n": history-search-forward
+"\C-w": backward-kill-word
+"\C-x\C-f": complete-filename
+"\C-x\C-n": dynamic-complete-history

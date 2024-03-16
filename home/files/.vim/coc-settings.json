@@ -1,5 +1,0 @@
-{
-  "diagnostic.displayByAle": true,
-  "go.goplsPath": "gopls",
-  "rust-analyzer.serverPath": "rust-analyzer"
-}
