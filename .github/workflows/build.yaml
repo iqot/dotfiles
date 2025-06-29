@@ -1,35 +1,26 @@
 name: Build
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 jobs:
   flake:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runners: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runners }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@V27
+      - uses: DeterminateSystems/magic-nix-cache-action@v7
       - name: Check flake
         run: nix flake check
-  home-manager:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
-      - name: Build Home Manager configuration
-        run: nix run '.#home' -- build --flake '.#ci'
   nixos:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@V27
+      - uses: DeterminateSystems/magic-nix-cache-action@v7
       - name: Build NixOS configuration
-        run: nix run '.#nixos' -- build -L --flake '.#ci'
-  nix-darwin:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
-      - name: Build nix-darwin configuration
-        run: nix run '.#darwin' -- build -L --flake '.#ci'
+        run: nix run '.#os' -- build -L --flake '.#ci' --print-build-logs

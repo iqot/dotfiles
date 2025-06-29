@@ -2,19 +2,17 @@ name: Upgrade dependencies
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 15 * * THU"
+    - cron: "0 10 * * FRI"
 jobs:
   upgrade-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
-      - name: Update flake
-        run: nix flake update
-      - name: Update submodules
-        run: git submodule update --init --remote
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@V27
+      - name: Update dependencies
+        run: nix run '.#update'
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v6.1.0
         with:
           branch: bot/routine-update
           delete-branch: true
@@ -24,3 +22,4 @@ jobs:
           body: |
             - Update submodules
             - Update flakes
+            - Update packages
