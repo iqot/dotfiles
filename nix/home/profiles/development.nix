@@ -1,40 +1,37 @@
-{ config, lib, pkgs, dotfiles, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  dotfiles,
+  ...
+}:
 
 let
-  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux system;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   isGenericLinux = (config.targets.genericLinux.enable or false);
   isNixOS = isLinux && !isGenericLinux;
   cfg = config.dotfiles.profiles;
-  myPkgs = dotfiles.packages.${system};
 in
 {
-  options.dotfiles.profiles.development.enable =
-    lib.mkEnableOption "development packages";
+  options.dotfiles.profiles.development.enable = lib.mkEnableOption "development packages";
 
   config = lib.mkIf cfg.development.enable {
-    home.packages = with pkgs; [
-      github-cli
-      semgrep
-      shellcheck
-      tokei
-      universal-ctags
-    ]
-    ++ lib.optionals isLinux [ distrobox ]
-    ++ lib.optionals isNixOS [ man-pages ];
+    home.packages =
+      with pkgs;
+      [
+        github-cli
+        semgrep
+        shellcheck
+        tokei
+        universal-ctags
+      ]
+      ++ lib.optionals isLinux [ distrobox ]
+      ++ lib.optionals isNixOS [ man-pages ];
 
-    dotfiles.gnupg = {
+    dotfiles.gitsign = {
       enable = lib.mkDefault true;
-      enablePackage = lib.mkDefault (!isNixOS); # use the NixOS module instead
+      enableCredentialCache = lib.mkDefault true;
+      settings.connectorID = lib.mkDefault "https://github.com/login/oauth";
     };
-
-    dotfiles.vim.plugins.start = with pkgs.vimPlugins; [
-      coc-clangd
-      coc-cmake
-      coc-go
-      coc-rust-analyzer
-      coc-pyright
-      coc-tsserver
-      myPkgs.coc-ansible
-    ];
   };
 }

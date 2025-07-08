@@ -1,11 +1,6 @@
-{ mkShellNoCC
-, formatter
-, shellcheck
-}:
+{ config, mkShellNoCC }:
 
 mkShellNoCC {
-  nativeBuildInputs = [
-    formatter
-    shellcheck
-  ];
+  inherit (config.treefmt.build.devShell) nativeBuildInputs;
+  shellHook = config.pre-commit.installationScript;
 }

@@ -1,7 +1,13 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 let
   cfg = config.dotfiles.git;
+  gitIni = pkgs.formats.gitIni { };
   inherit (pkgs.gitAndTools) delta;
 in
 {
@@ -9,8 +15,15 @@ in
     config = lib.mkOption {
       type = lib.types.submoduleWith {
         modules = [
+          {
+            freeformType = gitIni.type;
+          }
           ./option.nix
-          { _module.args = { inherit (config.dotfiles) flakeOptions; }; }
+          {
+            _module.args = {
+              inherit (config.dotfiles) flakeOptions;
+            };
+          }
         ];
         shorthandOnlyDefinesConfig = true;
       };
@@ -33,9 +46,7 @@ in
   };
 
   config = lib.mkMerge [
-    {
-      xdg.configFile."git/hmconfig".text = lib.generators.toGitINI cfg.config;
-    }
+    { xdg.configFile."git/hmconfig".source = gitIni.generate "git.ini" cfg.config; }
     (lib.mkIf cfg.enableDelta {
       home.packages = [ delta ];
       dotfiles.git.config = {

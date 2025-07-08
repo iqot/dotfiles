@@ -4,12 +4,8 @@
 DOTFILE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILE_FILES_DIR=files
 
-# shellcheck source=scripts/lib/setup
-source "$DOTFILE_DIR/scripts/lib/setup"
-
-# Remove dead symlinks
-clean:
-  - gc: true
+# shellcheck source=scripts/lib/setup.sh
+source "$DOTFILE_DIR/scripts/lib/setup.sh"
 
 run: submodule updates
   - git submodule --quiet update --init
@@ -37,10 +33,10 @@ install: shell config
 
 install: Vim config
   - .vim
-  - .config/nvim
-  - download: \
-      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-      ~/.vim/autoload/plug.vim
+
+install: Neovim config
+  - skip: true # It's installed by Home Manager
+  - .config/nvim/init.lua
 
 install: Git config
   - .config/git/attributes
@@ -83,7 +79,6 @@ install: VSCode config
 install: miscellaneous config
   - .clang-format
   - .editrc
-  - .prettierrc
   - .screenrc
   - .wgetrc
   - .config/bat/config
@@ -101,14 +96,12 @@ install: miscellaneous config
   - .local/bin/imgcat
   - .local/bin/uninstaller
   - Library/Application\ Support/AquaSKK/keymap.conf
-  - Library/Application\ Support/iTerm2/DynamicProfiles/template.plist
   - Library/Developer/Xcode/UserData/IDETemplateMacros.plist
 
 # The following will not run unless --init is specified
 
 run: package installation
   - init: true
-  - nvim --headless +PlugInstall +'%print' +qall
   - ~/.config/emacs/bin/doom -y install --no-config
 
 githooks:

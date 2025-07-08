@@ -1,4 +1,9 @@
-{ lib, flake-parts-lib, inputs, ... }:
+{
+  lib,
+  flake-parts-lib,
+  inputs,
+  ...
+}:
 
 let
   inherit (flake-parts-lib) importApply;
@@ -8,8 +13,10 @@ let
       (importApply ./config.nix { inherit inputs; })
       (importApply ./nixpkgs.nix { inherit inputs; })
       (importApply ./lib/flake-module.nix { inherit inputs; })
+      (importApply ./packages/flake-modules.nix { inherit inputs; })
     ];
     checks = ./checks.nix;
+    style = ./style.nix;
   };
 in
 {
@@ -28,9 +35,5 @@ in
 
   flake = {
     inherit flakeModules;
-  };
-
-  perSystem = { pkgs, ... }: {
-    formatter = pkgs.nixpkgs-fmt;
   };
 }

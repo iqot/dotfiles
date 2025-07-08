@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.dotfiles.emacs;
@@ -10,17 +15,15 @@ in
   config = lib.mkIf cfg.enable {
     programs.emacs = {
       enable = lib.mkDefault true;
-      package = lib.mkDefault pkgs.emacsNativeComp;
       extraConfig = ''
         (setq dired-use-ls-dired t
               insert-directory-program "${pkgs.coreutils}/bin/ls"
               treemacs-python-executable "${pkgs.python3}/bin/python")
       '';
-      extraPackages = epkgs:
-        with epkgs; [
+      extraPackages =
+        epkgs: with epkgs; [
           # include Doom Emacs dependencies that tries to build native C code
           emacsql
-          emacsql-sqlite
           pdf-tools
           vterm
         ];
@@ -35,7 +38,7 @@ in
 
         syncDoomEmacs() {
           local oldEmacs newEmacs
-          oldEmacs="$(readlink -m "$oldGenPath/home-path/bin/emacs")"
+          oldEmacs="$(readlink -m "''${oldGenPath:-/nonexistent}/home-path/bin/emacs")"
           newEmacs="$(readlink -m "$newGenPath/home-path/bin/emacs")"
           if [[ "$newEmacs" == "$oldEmacs" ]]; then
             return

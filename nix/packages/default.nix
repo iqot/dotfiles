@@ -1,37 +1,26 @@
-{ lib, inputs, config, ... }:
+{ config, inputs, ... }:
 
 {
-  perSystem = { pkgs, nixos, ... }:
-    let
-      inherit (pkgs.stdenv) isDarwin isLinux;
-      nix = pkgs.nixVersions.${config.dotfiles.nix.package};
-    in
+  perSystem =
+    { pkgs, nixos, ... }:
     {
-      packages = rec {
+      dotfiles.callPackages = {
+        enable = true;
+        directory = ./by-name;
+      };
 
-        mmdbctl = pkgs.callPackage ./mmdbctl.nix { };
-        neovim = pkgs.callPackage ./neovim.nix { };
-        terminfo-collection = pkgs.callPackage ./terminfo-collection.nix { };
-
-        coc-ansible = pkgs.callPackage ./coc-ansible.nix {
-          inherit (pkgs.vimUtils) buildVimPlugin;
-        };
-
-      } // lib.optionalAttrs isLinux {
-
-        nixos-rebuild = nixos.callPackage ./nixos-rebuild.nix { inherit nix; };
-        zsh = pkgs.callPackage ./zsh.nix { };
-
-        nixos-iso = nixos.callPackage ./nixos-iso.nix {
+      dotfiles.callPackages.extraPackages = ps: {
+        nixos-iso = nixos.callPackage ./by-name/nixos-iso.nix {
           inherit nixos;
           inherit (inputs.self.lib) mkNixOS;
           modules = [ ];
         };
 
-      } // lib.optionalAttrs isDarwin {
+        nixos-rebuild = nixos.callPackage ./by-name/nixos-rebuild.nix {
+          nix = pkgs.nixVersions.${config.dotfiles.nix.package};
+        };
 
-        aquaskk-reload-config = pkgs.callPackage ./aquaskk-reload-config { };
-
-      } // pkgs.callPackages ./skk-jisyo.nix { };
+        zsh = ps.callPackage ./by-name/zsh.nix { inherit (pkgs) zsh; };
+      };
     };
 }

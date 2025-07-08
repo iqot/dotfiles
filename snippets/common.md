@@ -5,8 +5,8 @@
 > mode, and the placeholders can be replaced by pressing `^J` also in insert
 > mode.
 >
-> The format of this file is derived from tldr-pages.
-> More info: <https://github.com/tldr-pages/tldr/blob/master/contributing-guides/style-guide.md>
+> The format of this file is derived from tldr-pages. More info:
+> <https://github.com/tldr-pages/tldr/blob/master/contributing-guides/style-guide.md>
 >
 > Some snippets may include zsh-specific syntax.
 
@@ -34,9 +34,17 @@
 
 `curl '{{https://example.com/}}' -H "Authorization: Bearer {{$token}}"`
 
+- Print an HTTP URL after redirections:
+
+`curl -sSfL -w '%{url_effective}' -o /dev/null {{https://example.com}}`
+
 - Send a DNS-over-HTTPS request:
 
 `curl -sSL -H 'application/dns-json' '{{https://cloudflare-dns.com/dns-query}}?name={{example.com}}&type={{A}}'`
+
+- Generate a DuckDuckGo email address:
+
+`curl -sSfL -X POST https://quack.duckduckgo.com/api/email/addresses -H "Authorization: Bearer {{$token}}" | jq -r '.address + "@duck.com"'`
 
 - Lookup the manpage for a specific version of tmux:
 
@@ -125,6 +133,10 @@
 - Generate a random string of length n:
 
 `openssl rand -base64 {{n}} | head -c{{n}}`
+
+- Convert hexadecimal to text:
+
+`perl -lne 'print pack "H*", $_' <<<'{{e38392e382abe383aae382ace3839fe382a8e383ab}}'`
 
 - Serve the current directory over HTTP:
 

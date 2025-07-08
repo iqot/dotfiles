@@ -1,4 +1,10 @@
-{ lib, config, modulesPath, dotfiles, ... }:
+{
+  lib,
+  config,
+  modulesPath,
+  dotfiles,
+  ...
+}:
 
 let
   cfg = config.dotfiles.profiles.installer;

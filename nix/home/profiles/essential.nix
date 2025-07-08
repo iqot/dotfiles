@@ -1,4 +1,10 @@
-{ config, lib, pkgs, dotfiles, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  dotfiles,
+  ...
+}:
 
 let
   inherit (pkgs.stdenv.hostPlatform) isDarwin system;
@@ -9,11 +15,11 @@ in
     lib.mkEnableOption "essential packages for servers and desktops alike";
 
   config = lib.mkIf config.dotfiles.profiles.essential.enable {
-    home.packages = with pkgs;
+    home.packages =
+      with pkgs;
       [
         bat
         broot
-        cmigemo
         fd
         fselect
         ghq
@@ -22,8 +28,6 @@ in
         jq
         lsof
         magic-wormhole
-        neofetch
-        nixpkgs-fmt
         nkf
         ranger
         tig
@@ -32,7 +36,8 @@ in
         zsh-completions
         gitAndTools.git-absorb
         nodePackages.prettier
-      ] ++ lib.optionals (!isDarwin) [
+      ]
+      ++ lib.optionals (!isDarwin) [
         dnsutils
         file
         libarchive
@@ -40,7 +45,8 @@ in
         netcat
         whois
         myPkgs.terminfo-collection
-      ] ++ lib.optionals isDarwin [
+      ]
+      ++ lib.optionals isDarwin [
         ssh-copy-id
         watch
       ];

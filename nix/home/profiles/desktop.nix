@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
@@ -8,7 +13,8 @@ in
     lib.mkEnableOption "essential packages for desktop environemnts";
 
   config = lib.mkIf config.dotfiles.profiles.desktop.enable {
-    home.packages = with pkgs;
+    home.packages =
+      with pkgs;
       lib.optionals isLinux [
         anki
         gimp
@@ -16,9 +22,19 @@ in
         kitty
         libreoffice
         lollypop
-        vlc
         xclip
       ];
+
+    programs.mpv = {
+      enable = lib.mkDefault true;
+      config = {
+        profile = lib.mkDefault "fast"; # trade quality for power efficiency
+        autofit-larger = lib.mkDefault "100%x100%";
+        hwdec = lib.mkDefault "auto";
+        keep-open = lib.mkDefault true;
+      };
+      scripts = lib.optionals isLinux [ pkgs.mpvScripts.mpris ];
+    };
 
     dotfiles.emacs.enable = lib.mkDefault true;
     dotfiles.profiles = {
