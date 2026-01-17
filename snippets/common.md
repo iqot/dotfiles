@@ -66,6 +66,10 @@
 
 `find {{path/to/directory}} -type f -printf . | wc -c`
 
+- Optimize Git performance on large repositories:
+
+`git config feature.manyFiles true; git config core.fsmonitor true`
+
 - Add files to the git staging area, but leave their contents out:
 
 `git add --intent-to-add {{flake.nix}}`
@@ -157,14 +161,6 @@
 - Expand an embedded Ruby template:
 
 `erb -T - {{template.txt.erb}}`
-
-- Show the ink level of an USB printer:
-
-`sudo ink -p usb`
-
-- Show the ink level of a Canon BJNP printer:
-
-`sudo ink -p bjnp`
 
 - Decode URL-encoded string from stdin:
 

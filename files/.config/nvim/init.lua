@@ -7,8 +7,15 @@ vim.opt.backupdir:remove(".")
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.exrc = true
 
 vim.g.tex_flavor = "latex"
+
+if vim.fn.executable("rg") == 1 then
+  -- Neovim defaults to using ripgrep when available, but adds the -uu option to
+  -- skip filtering of ignored files.
+  vim.opt.grepprg = "rg --vimgrep --hidden "
+end
 
 vim.cmd("silent! packadd! cfilter")
 

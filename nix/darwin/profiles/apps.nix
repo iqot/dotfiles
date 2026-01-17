@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options.dotfiles.profiles.apps.enable = lib.mkEnableOption "essential apps for Macs";
@@ -20,17 +25,18 @@
       "aquaskk"
       "firefox"
       "gimp"
-      "gutenprint"
       "inkscape"
       "iterm2"
       "krita"
       "netnewswire"
-      "wireshark"
+      "wireshark-app"
       "zotero"
     ];
 
     homebrew.masApps = {
-      "AdGuard for Safari" = 1440147259;
+      "uBlock Origin Lite" = 6745342698;
     };
+
+    environment.systemPackages = [ pkgs.mas ];
   };
 }

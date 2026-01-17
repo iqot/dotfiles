@@ -8,13 +8,21 @@
 
 let
   inherit (pkgs.stdenv.hostPlatform) isDarwin system;
+  cfg = config.dotfiles.profiles.essential;
   myPkgs = dotfiles.packages.${system};
 in
 {
-  options.dotfiles.profiles.essential.enable =
-    lib.mkEnableOption "essential packages for servers and desktops alike";
+  options.dotfiles.profiles.essential = {
+    enable = lib.mkEnableOption "essential packages for servers and desktops alike";
 
-  config = lib.mkIf config.dotfiles.profiles.essential.enable {
+    installCommonPackages = lib.mkOption {
+      type = lib.types.bool;
+      default = !isDarwin;
+      description = "Whether to install packages commonly preinstalled in Linux distros.";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
     home.packages =
       with pkgs;
       [
@@ -23,21 +31,17 @@ in
         fd
         fselect
         ghq
-        gitstatus
         httpie
-        jq
         lsof
         magic-wormhole
         nkf
         ranger
-        tig
+        timg
         tmux
         wget
         zsh-completions
-        gitAndTools.git-absorb
-        nodePackages.prettier
       ]
-      ++ lib.optionals (!isDarwin) [
+      ++ lib.optionals cfg.installCommonPackages [
         dnsutils
         file
         libarchive
@@ -46,10 +50,8 @@ in
         whois
         myPkgs.terminfo-collection
       ]
-      ++ lib.optionals isDarwin [
-        ssh-copy-id
-        watch
-      ];
+      ++ lib.optionals isDarwin [ watch ]
+      ++ lib.optionals (!isDarwin) [ jq ];
 
     dotfiles = {
       git.enableDelta = lib.mkDefault true;

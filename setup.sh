@@ -42,7 +42,6 @@ install: Git config
   - .config/git/attributes
   - .config/git/config
   - .config/git/ignore
-  - .config/tig/config
   - .local/bin/git-deploy
   - .local/bin/git-kitty
 
@@ -90,11 +89,8 @@ install: miscellaneous config
   - .config/kitty/kitty.conf
   - .config/nano/nanorc
   - .config/ranger/rc.conf
-  - .config/ranger/scope.sh
   - .config/tmux/tmux.conf
   - .config/zathura/zathurarc
-  - .local/bin/imgcat
-  - .local/bin/uninstaller
   - Library/Application\ Support/AquaSKK/keymap.conf
   - Library/Developer/Xcode/UserData/IDETemplateMacros.plist
 
