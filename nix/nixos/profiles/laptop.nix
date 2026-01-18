@@ -22,13 +22,13 @@ in
       hardware.enable = lib.mkDefault true;
     };
 
+    services.xserver.xkb.options = lib.mkDefault "ctrl:nocaps,shift:both_capslock";
+    services.libinput.touchpad = {
+      clickMethod = lib.mkDefault "clickfinger";
+      naturalScrolling = lib.mkDefault true;
+      tapping = lib.mkDefault false;
+    };
     services.xserver = {
-      xkbOptions = lib.mkDefault "ctrl:nocaps,shift:both_capslock";
-      libinput.touchpad = {
-        clickMethod = lib.mkDefault "clickfinger";
-        naturalScrolling = lib.mkDefault true;
-        tapping = lib.mkDefault false;
-      };
       synaptics = {
         tapButtons = lib.mkDefault false;
         twoFingerScroll = lib.mkDefault true;
