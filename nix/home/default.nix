@@ -19,10 +19,14 @@ in
       ...
     }:
     {
-      imports = dotfiles.lib.importDirs [
-        ./modules
-        ./profiles
-      ];
+      imports =
+        dotfiles.lib.importDirs [
+          ./modules
+          ./profiles
+        ]
+        ++ [
+          inputs.zen-browser.homeModules.default
+        ];
 
       options.dotfiles = {
         flakeOptions = lib.mkOption {

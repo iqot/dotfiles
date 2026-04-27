@@ -22,6 +22,7 @@ in
         libreoffice
         lollypop
         xclip
+        obsidian
       ];
 
     programs.mpv = {

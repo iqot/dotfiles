@@ -40,6 +40,8 @@ in
         tmux
         wget
         zsh-completions
+        git-absorb
+        nodePackages.prettier
       ]
       ++ lib.optionals cfg.installCommonPackages [
         dnsutils

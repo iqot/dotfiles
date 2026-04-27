@@ -330,14 +330,11 @@ in
           type = "lua";
           config = # lua
             ''
-              require("nvim-treesitter.configs").setup({
-                auto_install = false,
-                highlight = {
-                  enable = true,
-                },
-                indent = {
-                  enable = true,
-                },
+              vim.api.nvim_create_autocmd("FileType", {
+                callback = function(ev)
+                  pcall(vim.treesitter.start, ev.buf)
+                  vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end,
               })
             '';
         }
@@ -346,26 +343,24 @@ in
           type = "lua";
           config = # lua
             ''
-              require("nvim-treesitter.configs").setup({
-                textobjects = {
-                  select = {
-                    enable = true,
-                    lookahead = true,
-                    keymaps = {
-                      ["af"] = "@function.outer",
-                      ["if"] = "@function.inner",
-                      ["ac"] = "@class.outer",
-                      ["ic"] = "@class.inner",
-                    },
+              require("nvim-treesitter-textobjects").setup({
+                select = {
+                  enable = true,
+                  lookahead = true,
+                  keymaps = {
+                    ["af"] = "@function.outer",
+                    ["if"] = "@function.inner",
+                    ["ac"] = "@class.outer",
+                    ["ic"] = "@class.inner",
                   },
-                  swap = {
-                    enable = true,
-                    swap_next = {
-                      ["<Leader>>"] = "@parameter.inner",
-                    },
-                    swap_previous = {
-                      ["<Leader><"] = "@parameter.inner",
-                    },
+                },
+                swap = {
+                  enable = true,
+                  swap_next = {
+                    ["<Leader>>"] = "@parameter.inner",
+                  },
+                  swap_previous = {
+                    ["<Leader><"] = "@parameter.inner",
                   },
                 },
               })

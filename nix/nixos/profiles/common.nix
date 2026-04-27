@@ -16,7 +16,7 @@ in
     i18n.defaultLocale = mkDefault "en_US.UTF-8";
     console.keyMap = mkDefault "us";
 
-    time.timeZone = mkDefault "Asia/Tokyo";
+    time.timeZone = mkDefault "Pacific/Auckland";
 
     nix.package = mkDefault pkgs.nixVersions.${nixAttrName};
     nix.extraOptions = ''

@@ -11,25 +11,25 @@ in
       name = lib.mkOption {
         type = lib.types.str;
         description = "The default username to use throughout this flake.";
-        default = "midchildan";
+        default = "shu";
       };
 
       fullName = lib.mkOption {
         type = lib.types.str;
         description = "The default full name to use throughout this flake.";
-        default = cfg.user.name;
+        default = "tobimatsush";
       };
 
       email = lib.mkOption {
         type = lib.types.str;
         description = "The default email to use throughout this flake.";
-        default = "git@${cfg.user.name}.org";
+        default = "git@iqot.dev";
       };
 
       pgpKey = lib.mkOption {
         type = lib.types.str;
         description = "The default PGP key to use throughout this flake.";
-        default = "5AC3E26C62BB5AAEC79DEDB5BA2B2D09C65A909B";
+        default = "8ABC1E9EB3BF5295";
       };
     };
 

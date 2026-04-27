@@ -10,14 +10,18 @@ let
   hasInteractiveCfg = config.dotfiles.profiles.interactive.enable;
 in
 {
-  options.dotfiles.profiles.network.enable =
-    lib.mkEnableOption "collection of network configurations";
+  options.dotfiles.profiles.network = {
+    enable = lib.mkEnableOption "collection of network configurations";
+    tailscale.enable = lib.mkEnableOption "Tailscale VPN";
+  };
 
   config = lib.mkIf cfg.enable {
     networking = {
       firewall = {
         enable = lib.mkDefault true;
         allowPing = lib.mkDefault false;
+        trustedInterfaces = lib.mkIf cfg.tailscale.enable [ "tailscale0" ];
+        allowedUDPPorts = lib.mkIf cfg.tailscale.enable [ config.services.tailscale.port ];
       };
 
       # container networking
@@ -47,6 +51,10 @@ in
         PasswordAuthentication = lib.mkDefault false;
         PermitRootLogin = lib.mkDefault "no";
       };
+    };
+
+    services.tailscale = lib.mkIf cfg.tailscale.enable {
+      enable = true;
     };
   };
 }
