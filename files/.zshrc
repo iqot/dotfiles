@@ -330,7 +330,7 @@ prompt dashboard
 zstyle ':vcs_info:*' enable git
 
 # must be run last
-ZSH_HIGHLIGHT_PATH="/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+ZSH_HIGHLIGHT_PATH="$HOME/.nix-profile/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 if [[ -f "$ZSH_HIGHLIGHT_PATH" ]]; then
   source $ZSH_HIGHLIGHT_PATH
