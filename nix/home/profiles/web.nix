@@ -112,26 +112,6 @@ in
       };
     };
 
-    programs.zen-browser = {
-      enable = lib.mkDefault true;
-      extraPrefs = lib.mkIf isLinux ''
-        // enable hardware accelerated video playback by default
-        //
-        // TODO: remove when this becomes the default
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=1777430
-        user_pref("media.ffmpeg.vaapi.enabled", true);
-
-        // enable swipe-to-navigate by default
-        //
-        // TODO: remove when this becomes the default
-        // https://bugzilla.mozilla.org/buglist.cgi?product=Core&short_desc_type=allwordssubstr&query_format=advanced&short_desc=swipe&component=Panning%20and%20Zooming
-        user_pref("widget.disable-swipe-tracker", false);
-
-        // content blocking
-        user_pref("browser.contentblocking.category", "strict");
-      '';
-    };
-
     targets.darwin = lib.mkIf isDarwin {
       defaults = {
         "com.apple.Safari" = {
