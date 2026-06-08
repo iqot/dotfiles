@@ -28,7 +28,6 @@ in
         tokei
         universal-ctags
         nodePackages.prettier
-        claude-code
       ]
       ++ lib.optionals isLinux [ distrobox ]
       ++ lib.optionals isNixOS [ man-pages ]

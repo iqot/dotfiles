@@ -22,5 +22,9 @@ in
     nix.extraOptions = ''
       experimental-features = nix-command flakes
     '';
+    nix.settings = {
+      substituters = [ "https://ryoppippi.cachix.org" ];
+      trusted-public-keys = [ "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms=" ];
+    };
   };
 }
