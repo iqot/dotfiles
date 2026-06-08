@@ -56,7 +56,11 @@ in
             cfg.args
             // {
               inherit system;
-              overlays = [ inputs.self.overlays.default ] ++ cfg.args.overlays;
+              overlays = [
+                inputs.self.overlays.default
+                inputs.nix-claude-code.overlays.default
+              ]
+              ++ cfg.args.overlays;
             }
           );
       in
