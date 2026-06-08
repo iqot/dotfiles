@@ -22,4 +22,8 @@ in
   + lib.optionalString pkgs.stdenv.isAarch64 ''
     extra-platforms = aarch64-darwin x86_64-darwin
   '';
+  nix.settings = {
+    substituters = [ "https://ryoppippi.cachix.org" ];
+    trusted-public-keys = [ "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms=" ];
+  };
 }
