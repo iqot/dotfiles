@@ -22,7 +22,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.neovim = {
       enable = true;
-      extraLuaConfig = builtins.readFile ../../../files/.config/nvim/init.lua;
+      initLua = builtins.readFile ../../../files/.config/nvim/init.lua;
       plugins = [
         {
           plugin = pkgs.emptyDirectory;
