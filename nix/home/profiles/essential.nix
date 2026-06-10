@@ -38,6 +38,7 @@ in
         nkf
         ranger
         tmux
+        tmux-xpanes
         wget
         zsh-completions
         git-absorb

@@ -161,3 +161,23 @@
 - Decode URL-encoded string from stdin:
 
 `while read; do : "${REPLY//\%/\\x}"; printf '%b\n' "${_//+/ }"; done`
+
+- Open a tmux pane per host and SSH into each, with keyboard input synchronized:
+
+`xpanes -c 'ssh {}' {{hosts...}}`
+
+- SSH into multiple hosts with pane titles, without opening interactive shells first:
+
+`xpanes --ssh {{user@host1 user@host2}}`
+
+- Follow multiple log files in separate panes:
+
+`xpanes -c 'tail -f {}' {{/var/log/*.log}}`
+
+- Run each argument as-is in its own pane:
+
+`xpanes -e '{{top}}' '{{watch -n1 df -h}}'`
+
+- Create a pane per line of stdin, e.g. follow logs of all running Docker containers:
+
+`docker container ls -q | xpanes -c 'docker logs -f {}'`
