@@ -23,6 +23,7 @@ in
         git-absorb
         github-cli
         semgrep
+        ast-grep
         shellcheck
         tokei
         universal-ctags
