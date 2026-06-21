@@ -27,8 +27,8 @@ in
         shellcheck
         tokei
         universal-ctags
-        nodePackages.prettier
         claude-code
+        prettier
       ]
       ++ lib.optionals isLinux [ distrobox ]
       ++ lib.optionals isNixOS [ man-pages ]

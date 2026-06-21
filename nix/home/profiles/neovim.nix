@@ -88,6 +88,7 @@ in
         # Colorscheme
         {
           plugin = pkgs.vimPlugins.gruvbox;
+          type = "viml";
           config = # vim
             ''
               colorscheme gruvbox
@@ -233,6 +234,7 @@ in
         }
         {
           plugin = pkgs.vimPlugins.vim-illuminate;
+          type = "viml";
           config = # vim
             ''
               hi link IlluminatedWordText cursorLine

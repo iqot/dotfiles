@@ -42,7 +42,7 @@ in
         wget
         zsh-completions
         git-absorb
-        nodePackages.prettier
+        prettier
       ]
       ++ lib.optionals cfg.installCommonPackages [
         dnsutils
