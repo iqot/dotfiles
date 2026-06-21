@@ -28,6 +28,7 @@ in
         tokei
         universal-ctags
         claude-code
+        antigravity-cli
         prettier
       ]
       ++ lib.optionals isLinux [ distrobox ]
