@@ -147,7 +147,8 @@ autoload -Uz fzf-widgets \
   && zle -N fzf-completion fzf-widgets \
   && zle -N fzf-cd-widget fzf-widgets \
   && zle -N fzf-file-widget fzf-widgets \
-  && zle -N fzf-history-widget fzf-widgets
+  && zle -N fzf-history-widget fzf-widgets \
+  && zle -N fzf-hostname-widget fzf-widgets
 autoload -Uz surround \
   && zle -N delete-surround surround \
   && zle -N add-surround surround \
@@ -183,6 +184,7 @@ bindkey -v \
   '^U' backward-kill-line \
   '^W' backward-kill-word \
   '^X^F' fzf-file-widget \
+  '^X^H' fzf-hostname-widget \
   '^X^J' fzf-snippet-expand \
   '^X^L' fzf-history-widget \
   '^X^O' complete-from-help \

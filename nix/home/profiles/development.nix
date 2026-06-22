@@ -24,10 +24,13 @@ in
         git-absorb
         github-cli
         semgrep
+        ast-grep
         shellcheck
         tokei
         universal-ctags
-        nodePackages.prettier
+        claude-code
+        antigravity-cli
+        prettier
       ]
       ++ lib.optionals isLinux [ distrobox ]
       ++ lib.optionals isNixOS [ man-pages ]

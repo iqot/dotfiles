@@ -27,7 +27,7 @@ in
         radare2
         valgrind
         nixos.linuxPackages.bcc
-        (lowPrio nixos.linuxPackages.bpftrace)
+        (lib.lowPrio nixos.linuxPackages.bpftrace)
       ]
       ++ lib.optionals (isLinux && cfg.desktop.enable) [ cutter ];
   };

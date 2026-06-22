@@ -38,10 +38,11 @@ in
         ranger
         timg
         tmux
+        tmux-xpanes
         wget
         zsh-completions
         git-absorb
-        nodePackages.prettier
+        prettier
       ]
       ++ lib.optionals cfg.installCommonPackages [
         dnsutils
