@@ -19,7 +19,10 @@ in
       ...
     }:
     {
-      imports = dotfiles.lib.importDirs [
+      imports = [
+        inputs.agent-skills.homeManagerModules.default
+      ]
+      ++ dotfiles.lib.importDirs [
         ./modules
         ./profiles
       ];
@@ -48,7 +51,7 @@ in
 
       config = {
         _module.args = {
-          inherit dotfiles;
+          inherit dotfiles inputs;
           nixos = (getSystem pkgs.stdenv.system).allModuleArgs.nixos;
         };
 
