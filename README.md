@@ -2,6 +2,11 @@
 
 dotfiles for my personal use.
 
+This repo is forked from
+[midchildan/dotfiles](https://github.com/midchildan/dotfiles). Many thanks to
+[midchildan](https://github.com/midchildan) for the original work this builds
+on.
+
 [![Build][build-badge]][build-url]
 
 ## Requirements
