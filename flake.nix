@@ -54,6 +54,10 @@
       url = "github:mattpocock/skills";
       flake = false;
     };
+    herdr-nix = {
+      url = "github:herdrdev/herdr-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
