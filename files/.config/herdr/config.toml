@@ -1,0 +1,66 @@
+# Keybindings mirror .config/tmux/tmux.conf wherever herdr has an equivalent
+# action. herdr has no nested key tables, so tmux's prefix tables (c, d, f, g,
+# t, Z, [, ], C-w) have no counterpart; only their single-action members are
+# flattened onto the prefix below. Actions tmux has and herdr does not --
+# next-layout, display-panes, rotate-window, break-pane, kill-other-panes,
+# select-layout -E, mark-pane, paste-buffer, command-prompt, synchronize-panes
+# -- are simply absent.
+#
+# Validate with `herdr config check`; apply to a running server with
+# `herdr server reload-config`.
+
+onboarding = false
+
+[ui]
+status_indicators = "dots"
+
+[theme]
+name = "gruvbox"
+auto_switch = false
+
+[keys]
+# tmux: set -g prefix C-z. This also leaves ctrl+b free inside copy mode, where
+# herdr uses it for page-up -- matching the tmux `C-b` copy-mode binding.
+prefix = "ctrl+z"
+
+# Pane focus -- tmux: prefix h/j/k/l
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# Pane resize -- tmux: prefix H/J/K/L. These displace herdr's default
+# swap_pane_* bindings, which move to prefix+ctrl+ below.
+resize_pane_left = "prefix+shift+h"
+resize_pane_down = "prefix+shift+j"
+resize_pane_up = "prefix+shift+k"
+resize_pane_right = "prefix+shift+l"
+
+# Pane swap -- tmux binds only C-j/C-k (down/up); left/right are added here for
+# symmetry and to keep them off the resize chords.
+swap_pane_left = "prefix+ctrl+h"
+swap_pane_down = "prefix+ctrl+j"
+swap_pane_up = "prefix+ctrl+k"
+swap_pane_right = "prefix+ctrl+l"
+
+# Splits -- tmux: C-w v splits side-by-side, C-w s splits stacked. Taking
+# prefix+s for the stacked split displaces herdr's settings panel, below.
+split_vertical = "prefix+v"
+split_horizontal = "prefix+s"
+settings = "prefix+shift+s"
+
+# Panes and tabs -- tmux: x, X, C-n, Enter (zoom), y (copy-mode), C-o
+# (last-pane), C-w w (cycle pane)
+close_pane = "prefix+x"
+close_tab = "prefix+shift+x"
+new_tab = "prefix+ctrl+n"
+zoom = "prefix+enter"
+copy_mode = "prefix+y"
+last_pane = "prefix+ctrl+o"
+cycle_pane_next = "prefix+ctrl+w"
+
+# tmux reaches these through tables that cannot be nested here: detach is
+# `prefix Z Z`, the picker is `prefix g b`, help is `prefix ?`.
+detach = "prefix+shift+z"
+goto = "prefix+g"
+help = "prefix+?"

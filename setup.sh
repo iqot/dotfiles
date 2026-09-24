@@ -2,9 +2,8 @@
 # shellcheck disable=SC2215
 
 DOTFILE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILE_FILES_DIR=files
 
-# shellcheck source=scripts/lib/setup.sh
+# shellcheck disable=SC1091
 source "$DOTFILE_DIR/scripts/lib/setup.sh"
 
 run: submodule updates
@@ -84,6 +83,7 @@ install: miscellaneous config
   - .config/broot/conf.hjson
   - .config/broot/launcher/refused
   - .config/gem/gemrc
+  - .config/herdr/config.toml
   - .config/ideavim/ideavimrc
   - .config/ipython/profile_default/ipython_config.py
   - .config/kitty/kitty.conf

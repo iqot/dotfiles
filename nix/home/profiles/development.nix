@@ -28,6 +28,11 @@ let
       '') programs;
     };
 
+  # nixpkgs gained herdr just after this flake.lock pin, and herdr's own flake
+  # builds it from source (Rust + Zig) with no cache behind it. herdr-nix wraps
+  # the upstream release binaries, keeping this a hash-verified download.
+  herdr = inputs.herdr-nix.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
   # Agents only discover skills one level deep, so each upstream category
   # becomes its own source with maxDepth 1. Recursing instead would yield
   # nested IDs like "engineering/tdd", which land at a path no agent reads.
@@ -54,6 +59,7 @@ in
         universal-ctags
         (withNode [ "claude" ] claude-code)
         antigravity-cli
+        herdr
         prettier
       ]
       ++ lib.optionals isLinux [ distrobox ]

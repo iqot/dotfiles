@@ -17,6 +17,10 @@ in
     {
       # It's a bit non-standard, but putting a configuration under legacyPackages
       # will make it available for multiple architectures under the same name.
+      #
+      # Per-host entries belong here rather than in flake.homeConfigurations:
+      # "nix eval .#homeConfigurations" resolves legacyPackages first, so this
+      # set shadows that one and is what Home Manager's hostname probe sees.
       legacyPackages.homeConfigurations =
         let
           ci = importHome ./ci.nix { inherit pkgs; };
@@ -24,6 +28,7 @@ in
         {
           inherit ci;
           ${username} = ci;
+          "${username}@north" = importHome ./north.nix { inherit pkgs; };
         };
     };
 }
