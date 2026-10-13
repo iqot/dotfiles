@@ -166,7 +166,8 @@
 
 `xpanes -c 'ssh {}' {{hosts...}}`
 
-- SSH into multiple hosts with pane titles, without opening interactive shells first:
+- SSH into multiple hosts with pane titles, without opening interactive shells
+  first:
 
 `xpanes --ssh {{user@host1 user@host2}}`
 
@@ -178,6 +179,7 @@
 
 `xpanes -e '{{top}}' '{{watch -n1 df -h}}'`
 
-- Create a pane per line of stdin, e.g. follow logs of all running Docker containers:
+- Create a pane per line of stdin, e.g. follow logs of all running Docker
+  containers:
 
 `docker container ls -q | xpanes -c 'docker logs -f {}'`
