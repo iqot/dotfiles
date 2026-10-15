@@ -11,19 +11,19 @@ jobs:
         runners: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.runners }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: wimpysworld/nothing-but-nix@v10
         if: runner.os == 'Linux'
-      - uses: cachix/install-nix-action@v31.8.2
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - uses: cachix/install-nix-action@v31.11.2
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
       - name: Check flake
         run: nix flake check
   nixos:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: wimpysworld/nothing-but-nix@v10
-      - uses: cachix/install-nix-action@v31.8.2
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - uses: cachix/install-nix-action@v31.11.2
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
       - name: Build NixOS configuration
         run: nix run '.#os' -- build -L --flake '.#ci' --print-build-logs
