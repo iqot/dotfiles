@@ -44,7 +44,7 @@ in
             noto-fonts
             noto-fonts-cjk-sans
             noto-fonts-cjk-serif
-            noto-fonts-emoji
+            noto-fonts-color-emoji
             ipafont
             dejavu_fonts
           ];
@@ -97,8 +97,8 @@ in
       }
 
       (lib.mkIf (cfg.type == "gnome") {
-        services.xserver.displayManager.gdm.enable = lib.mkDefault true;
-        services.xserver.desktopManager.gnome.enable = lib.mkDefault true;
+        services.displayManager.gdm.enable = lib.mkDefault true;
+        services.desktopManager.gnome.enable = lib.mkDefault true;
 
         services.gnome = {
           core-os-services.enable = true;
