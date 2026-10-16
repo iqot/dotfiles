@@ -7,9 +7,16 @@ jobs:
   upgrade-fast-inputs:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
+      # PRs opened with GITHUB_TOKEN don't trigger CI without manual approval.
+      - uses: actions/create-github-app-token@v3.3.0
+        id: app-token
+        with:
+          client-id: ${{ vars.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31.11.2
       - name: Update flake inputs
@@ -19,6 +26,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8.1.1
         with:
+          token: ${{ steps.app-token.outputs.token }}
           branch: bot/fast-inputs-update
           delete-branch: true
           labels: dependencies
