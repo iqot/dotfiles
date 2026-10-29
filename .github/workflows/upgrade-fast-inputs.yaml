@@ -1,0 +1,47 @@
+name: Upgrade fast-moving inputs
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 10 * * *"
+jobs:
+  upgrade-fast-inputs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # PRs opened with GITHUB_TOKEN don't trigger CI without manual approval.
+      - uses: actions/create-github-app-token@v3.3.0
+        id: app-token
+        with:
+          client-id: ${{ vars.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31.11.2
+      - name: Update flake inputs
+        run: >-
+          nix flake update nix-claude-code herdr-nix agent-skills vercel-skills
+          mattpocock-skills
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: bot/fast-inputs-update
+          delete-branch: true
+          labels: dependencies
+          title: "chore(deps): update fast-moving flake inputs"
+          commit-message: "chore(deps): update fast-moving flake inputs"
+          body: |
+            - Update nix-claude-code, herdr-nix, and agent skills flake inputs
+      # Auto-merge waits for the required checks on main and never merges a
+      # conflicting PR.
+      - name: Enable auto-merge
+        if:
+          steps.cpr.outputs.pull-request-url != '' &&
+          steps.cpr.outputs.pull-request-operation != 'closed'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+        run: gh pr merge --auto --merge "$PR_URL"

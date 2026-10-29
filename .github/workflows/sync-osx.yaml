@@ -1,0 +1,56 @@
+name: Merge main into osx
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed]
+    branches: [main]
+jobs:
+  merge-main-into-osx:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged &&
+       github.event.pull_request.head.ref == 'bot/fast-inputs-update')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      # Pushing a merge that carries workflow file changes needs the workflows permission.
+      - uses: actions/create-github-app-token@v3.3.0
+        id: app-token
+        with:
+          client-id: ${{ vars.BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-workflows: write
+      - uses: actions/checkout@v7
+        with:
+          ref: osx
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+      # Known submodule conflicts are resolved below; any other conflict fails
+      # the job and leaves osx untouched.
+      - name: Merge main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898182+github-actions[bot]@users.noreply.github.com'
+          if ! git merge --no-edit origin/main; then
+            # osx intentionally drops these submodules; keep them deleted.
+            for p in files/.local/opt/gef files/.local/opt/peda; do
+              git rm -q --cached --ignore-unmatch "$p" || true
+              rm -rf "$p"
+            done
+            # Submodules aren't checked out, so git can't merge their pointers.
+            # Take main's pinned revision.
+            for p in $(git diff --name-only --diff-filter=U); do
+              if [ "$(git ls-tree origin/main "$p" | awk '{print $1}')" = 160000 ]; then
+                git update-index --cacheinfo "160000,$(git rev-parse "origin/main:$p"),$p"
+              fi
+            done
+            if [ -n "$(git diff --name-only --diff-filter=U)" ]; then
+              echo 'Unresolved conflicts:'
+              git diff --name-only --diff-filter=U
+              exit 1
+            fi
+            git commit --no-edit
+          fi
+          git push origin osx
