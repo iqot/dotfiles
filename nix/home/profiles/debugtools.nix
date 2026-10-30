@@ -28,7 +28,9 @@ in
         valgrind
         nixos.linuxPackages.bcc
         (lib.lowPrio nixos.linuxPackages.bpftrace)
-      ]
-      ++ lib.optionals (isLinux && cfg.desktop.enable) [ cutter ];
+      ];
+    # cutter fails to build against Qt 6.12 in current nixpkgs-unstable.
+    # Restore it once https://github.com/NixOS/nixpkgs/issues/576576 is fixed:
+    #   ++ lib.optionals (isLinux && cfg.desktop.enable) [ cutter ];
   };
 }
