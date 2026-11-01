@@ -7,6 +7,7 @@ on:
 jobs:
   flake:
     strategy:
+      fail-fast: false
       matrix:
         runners: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.runners }}
