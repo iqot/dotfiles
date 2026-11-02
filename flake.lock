@@ -178,11 +178,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793430095,
-        "narHash": "sha256-yoVut5M414gsQhsYzPn6GDzMN9QZK1GZ6IB/yyg5JvA=",
+        "lastModified": 1793597281,
+        "narHash": "sha256-LpFqkuyr+a1SfuabqwE/yeijJ9po0nr9NQjKwlAQuI8=",
         "owner": "ryoppippi",
         "repo": "nix-claude-code",
-        "rev": "2b939700cb58c79a9889a2079f42ceef960cab80",
+        "rev": "58b1242d01958826ffc61c14436644f600ad208e",
         "type": "github"
       },
       "original": {
@@ -302,11 +302,11 @@
     "vercel-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1793234976,
-        "narHash": "sha256-FI+bM+AtmOb4rpeQnR0XHvGhuc7XhF5NQ73zmqh6Cb0=",
+        "lastModified": 1793643611,
+        "narHash": "sha256-5DNREEnDoIVUlJ5pEob6YuZ7JUzJN3lZCV3K89BU2pA=",
         "owner": "vercel-labs",
         "repo": "skills",
-        "rev": "92a9a34ac3bf88e695e468b90c7bf32f163d32c8",
+        "rev": "51b9062b3fc51dc04c89ab92dbeb65681fa0cb25",
         "type": "github"
       },
       "original": {
