@@ -60,10 +60,10 @@ in
         antigravity-cli
         herdr
         prettier
+        # Run semgrep via `uvx semgrep`. Its tightly pinned Python deps clash
+        # with nixpkgs' shared package set and break it on routine updates.
+        uv
       ]
-      # semgrep-core crashes patchelf on Linux in current nixpkgs-unstable.
-      # Restore it there once https://github.com/NixOS/nixpkgs/issues/579107 is fixed.
-      ++ lib.optionals (!isLinux) [ semgrep ]
       ++ lib.optionals isLinux [ distrobox ]
       ++ lib.optionals isNixOS [ man-pages ]
       ++ lib.optionals cfg.extras.enable [ nixos-shell ];
