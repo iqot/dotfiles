@@ -58,6 +58,7 @@ in
         (withNode [ "claude" ] claude-code)
         antigravity-cli
         herdr
+        herdr-desktop
         prettier
         # Run semgrep via `uvx semgrep`. Its tightly pinned Python deps clash
         # with nixpkgs' shared package set and break it on routine updates.
