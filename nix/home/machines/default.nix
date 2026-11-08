@@ -28,7 +28,6 @@ in
         {
           inherit ci;
           ${username} = ci;
-          "${username}@north" = importHome ./north.nix { inherit pkgs; };
         };
     };
 }

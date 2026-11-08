@@ -132,6 +132,15 @@ of the interesting ones:
   <dd>
     Enables all of the above. Disabled by default.
   </dd>
+  <dt>dotfiles.profiles.t3code.enable</dt>
+  <dd>
+    Configures T3 Code. Pick agents with
+    <code>dotfiles.profiles.t3code.providers</code> and choose
+    <code>"desktop"</code> or <code>"server"</code> (headless, localhost only)
+    with <code>dotfiles.profiles.t3code.mode</code>. On macOS the app itself
+    comes from the <code>t3-code</code> Homebrew cask. Not covered by
+    <code>enableAll</code>. Disabled by default.
+  </dd>
 </dl>
 
 [files]: ../../files

@@ -58,6 +58,10 @@
       url = "github:herdrdev/herdr-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    codex-cli-nix = {
+      url = "github:sadjow/codex-cli-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
