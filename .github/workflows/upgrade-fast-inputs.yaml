@@ -18,11 +18,11 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
       - uses: actions/checkout@v7
-      - uses: cachix/install-nix-action@v31.11.2
+      - uses: cachix/install-nix-action@v31.11.3
       - name: Update flake inputs
         run: >-
-          nix flake update nix-claude-code herdr-nix agent-skills vercel-skills
-          mattpocock-skills
+          nix flake update nix-claude-code codex-cli-nix herdr-nix agent-skills
+          vercel-skills mattpocock-skills
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8.1.1
@@ -34,7 +34,7 @@ jobs:
           title: "chore(deps): update fast-moving flake inputs"
           commit-message: "chore(deps): update fast-moving flake inputs"
           body: |
-            - Update nix-claude-code, herdr-nix, and agent skills flake inputs
+            - Update nix-claude-code, codex-cli-nix, herdr-nix, and agent skills flake inputs
       # Auto-merge waits for the required checks on main and never merges a
       # conflicting PR.
       - name: Enable auto-merge
