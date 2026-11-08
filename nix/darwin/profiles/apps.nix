@@ -29,6 +29,7 @@
       "iterm2"
       "krita"
       "netnewswire"
+      "t3-code"
       "wireshark-app"
       "zotero"
     ];
