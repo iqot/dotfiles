@@ -21,6 +21,7 @@ in
       default = "gnome";
       description = "Which DE to use.";
     };
+    _1password.enable = lib.mkEnableOption "1Password with browser integration";
   };
 
   config = lib.mkIf cfg.enable (
@@ -95,6 +96,16 @@ in
 
         users.users.${username}.extraGroups = [ "networkmanager" ];
       }
+
+      # The NixOS module installs the setgid BrowserSupport helper that browser
+      # integration needs; the Flatpak build can't provide it.
+      (lib.mkIf cfg._1password.enable {
+        programs._1password.enable = true;
+        programs._1password-gui = {
+          enable = true;
+          polkitPolicyOwners = [ username ];
+        };
+      })
 
       (lib.mkIf (cfg.type == "gnome") {
         services.displayManager.gdm.enable = lib.mkDefault true;
