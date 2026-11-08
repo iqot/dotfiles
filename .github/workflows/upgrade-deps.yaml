@@ -18,7 +18,7 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
       - uses: actions/checkout@v7
-      - uses: cachix/install-nix-action@v31.11.2
+      - uses: cachix/install-nix-action@v31.11.3
       - name: Update dependencies
         run: nix run '.#update'
       - name: Create Pull Request
