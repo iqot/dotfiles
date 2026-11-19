@@ -197,11 +197,11 @@
     "mattpocock-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1794472958,
-        "narHash": "sha256-AYSRCvBL8TDDdW3rgKu2T7gl4YYDoDId0jYbabEFyfs=",
+        "lastModified": 1795095298,
+        "narHash": "sha256-fc5+qmchp1IQ/rQP1olWKC1eC4VdYhaB7YYzC3+JBe0=",
         "owner": "mattpocock",
         "repo": "skills",
-        "rev": "5863806dd4e15c63174bee4e7515a4256792ecfa",
+        "rev": "abeeaf95660ba9e8b7c753eb38f441ca707a8823",
         "type": "github"
       },
       "original": {
@@ -217,11 +217,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794949264,
-        "narHash": "sha256-W9IcFFI76+D9GECAPmChLvvc41mefYkHowxrZSGI9jc=",
+        "lastModified": 1795046516,
+        "narHash": "sha256-C+nkURGvrX3YzdjoXYWg+mH/7VtyuXvqMK1MsvyTNHE=",
         "owner": "ryoppippi",
         "repo": "nix-claude-code",
-        "rev": "b176265279ad4d9ab2c5fa7f24ba9bd2ef25f80e",
+        "rev": "98952bcc1d63618b004868bc535852fa292fd66a",
         "type": "github"
       },
       "original": {
